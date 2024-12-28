@@ -31,13 +31,10 @@ class _TinderCardState extends State<TinderCard> {
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
-  child: widget.isFront ? buildFrontCard(): buildCard(),
-);
+      child: widget.isFront ? buildFrontCard() : buildCard(),
+    );
   }
 
-// SizedBox.expand(
-//   child: widget.isFront ? buildFrontCard(): buildCard(),
-// );
   // front of the card
   Widget buildFrontCard() {
     return GestureDetector(
@@ -93,6 +90,28 @@ class _TinderCardState extends State<TinderCard> {
             alignment: const Alignment(-0.3, 0),
           ),
         ),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.transparent, Colors.black],
+              stops: [0.7, 1],
+            ),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Spacer(),
+                buildName(),
+                const SizedBox(height: 8),
+                buildLiveLocation(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -105,13 +124,13 @@ class _TinderCardState extends State<TinderCard> {
 
     switch (status) {
       case CardStatus.like:
-        final child =
-            buildStamp(angle: -0.5, color: Colors.green, text: 'LIKE',opacity:opacity);
+        final child = buildStamp(
+            angle: -0.5, color: Colors.green, text: 'LIKE', opacity: opacity);
         return Positioned(top: 64, left: 50, child: child);
 
       case CardStatus.dislike:
-        final child =
-            buildStamp(angle: 0.5, color: Colors.red, text: 'DISLIKE',opacity:opacity);
+        final child = buildStamp(
+            angle: 0.5, color: Colors.red, text: 'DISLIKE', opacity: opacity);
         return Positioned(
           top: 64,
           right: 50,
@@ -119,7 +138,8 @@ class _TinderCardState extends State<TinderCard> {
         );
       case CardStatus.superLike:
         final child = Center(
-          child: buildStamp(color: Colors.blue, text: 'SUPER\n LIKE',opacity:opacity),
+          child: buildStamp(
+              color: Colors.blue, text: 'SUPER\n LIKE', opacity: opacity),
         );
 
         return Positioned(bottom: 128, right: 0, left: 0, child: child);
@@ -165,7 +185,7 @@ class _TinderCardState extends State<TinderCard> {
     return Row(
       children: [
         Text(
-          widget.user.name,
+          '${widget.user.name},',
           style: const TextStyle(
             color: Colors.white,
             fontSize: 30,
@@ -174,7 +194,7 @@ class _TinderCardState extends State<TinderCard> {
         ),
         const SizedBox(width: 16),
         Text(
-          ',${widget.user.age.toString()}',
+          widget.user.age.toString(),
           style: const TextStyle(
             color: Colors.white,
             fontSize: 30,
@@ -187,20 +207,20 @@ class _TinderCardState extends State<TinderCard> {
   // live location
   Widget buildLiveLocation() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 8),
         Text(
           'Live in ${widget.user.liveLocation}',
           style: TextStyle(
-            color: Colors.grey[300],
+            color: Colors.grey[500],
             fontSize: 16,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Text(
           '${widget.user.miles} miles away',
           style: TextStyle(
-            color: Colors.grey[300],
+            color: Colors.grey[500],
             fontSize: 16,
           ),
         ),
