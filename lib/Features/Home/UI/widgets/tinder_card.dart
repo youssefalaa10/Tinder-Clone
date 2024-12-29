@@ -85,7 +85,7 @@ class _TinderCardState extends State<TinderCard> {
       child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(widget.user.urlImage),
+            image: AssetImage(widget.user.urlImage),
             fit: BoxFit.cover,
             alignment: const Alignment(-0.3, 0),
           ),

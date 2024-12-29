@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tinder/Core/Managers/image_manager.dart';
 import 'package:tinder/Features/Home/UI/widgets/tinder_card.dart';
 
 import '../../Logic/card_provider.dart';
-// import '../../Model/user_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,7 +11,6 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
@@ -45,8 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ? Center(
             child: ElevatedButton(
                 onPressed: () {
-                  final provider =
-                      Provider.of<CardProvider>(context, listen: false);
                   provider.resetUsers();
                 },
                 child: const Text('Restart')),
@@ -62,83 +59,140 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildLogo() {
-    return const Center(
-      child: Icon(Icons.local_fire_department_rounded,
-          color: Colors.red, size: 40),
+    return Center(
+      child: Image.asset(
+        ImageManager.tinderLogo,
+        width: 30.45,
+      ),
     );
   }
+Widget buildButtons() {
+  final provider = Provider.of<CardProvider>(context);
+  final status = provider.getStatus();
+  final isLike = status == CardStatus.like;
+  final isDislike = status == CardStatus.dislike;
+  final isSuperLike = status == CardStatus.superLike;
 
-  Widget buildButtons() {
-    final provider = Provider.of<CardProvider>(context);
-    final users = provider.users;
-    final status = provider.getStatus();
-    final isLike = status == CardStatus.like;
-    final isDislike = status == CardStatus.dislike;
-    final isSuperLike = status == CardStatus.superLike;
-
-    return users.isEmpty
-        ? ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
+  return provider.users.isEmpty
+      ? ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            onPressed: () {
-              final provider =
-                  Provider.of<CardProvider>(context, listen: false);
-              provider.resetUsers();
-            },
-            child: const Text(
-              'Restart',
-              style: TextStyle(color: Colors.black),
-            ))
-        : Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      getColor(Colors.red, Colors.white, isDislike),
-                  backgroundColor:
-                      getColor(Colors.white, Colors.red, isDislike),
-                  side: getBorder(Colors.red, Colors.white, isDislike),
+          ),
+          onPressed: () {
+            provider.resetUsers();
+          },
+          child: const Text(
+            'Restart',
+            style: TextStyle(color: Colors.black),
+          ),
+        )
+      : Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Dislike Button
+            Container(
+              width: 62,
+              height: 62,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  foregroundColor: isDislike ? Colors.white : Colors.red,
+                  backgroundColor: isDislike ? Colors.red : Colors.white,
+                  shape: const CircleBorder(),
+                  side: BorderSide(
+                    color: isDislike ? Colors.transparent : Colors.red,
+                    width: 2,
+                  ),
                 ),
                 onPressed: () {
-                  final provider = Provider.of<CardProvider>(context);
                   provider.dislike();
                 },
-                child: const Icon(Icons.clear, size: 40),
+                child: Center(
+                  child: SizedBox.expand(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        size: 40,
+                        color: isDislike ? Colors.white : Colors.red,
+                      ),
+                      onPressed: null,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
               ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      getColor(Colors.blue, Colors.white, isSuperLike),
-                  backgroundColor:
-                      getColor(Colors.white, Colors.blue, isSuperLike),
-                  side: getBorder(Colors.blue, Colors.white, isSuperLike),
+            ),
+            // SuperLike Button
+            Container(
+              width: 42,
+              height: 42,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  foregroundColor: isSuperLike ? Colors.white : Colors.blue,
+                  backgroundColor: isSuperLike ? Colors.blue : Colors.white,
+                  shape: const CircleBorder(),
+                  side: BorderSide(
+                    color: isSuperLike ? Colors.transparent : Colors.blue,
+                    width: 2,
+                  ),
                 ),
                 onPressed: () {
-                  final provider = Provider.of<CardProvider>(context);
                   provider.superLike();
                 },
-                child: const Icon(Icons.star, size: 40),
+                child: Center(
+                  child: SizedBox.expand(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.star,
+                        size: 28,
+                        color: isSuperLike ? Colors.white : Colors.blue,
+                      ),
+                      onPressed: null,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
               ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  foregroundColor: getColor(Colors.green, Colors.white, isLike),
-                  backgroundColor: getColor(Colors.white, Colors.green, isLike),
-                  side: getBorder(Colors.green, Colors.white, isLike),
+            ),
+            // Like Button
+            Container(
+              width: 62,
+              height: 62,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  foregroundColor: isLike ? Colors.white : Colors.green,
+                  backgroundColor: isLike ? Colors.green : Colors.white,
+                  shape: const CircleBorder(),
+                  side: BorderSide(
+                    color: isLike ? Colors.transparent : Colors.green,
+                    width: 2,
+                  ),
                 ),
                 onPressed: () {
-                  final provider = Provider.of<CardProvider>(context);
                   provider.like();
                 },
-                child: const Icon(Icons.favorite, size: 40),
+                child: Center(
+                  child: SizedBox.expand(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.favorite,
+                        size: 40,
+                        color: isLike ? Colors.white : Colors.green,
+                      ),
+                      onPressed: null,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
               ),
-            ],
-          );
-  }
-
+            ),
+          ],
+        );
+}
   WidgetStateProperty<Color> getColor(
       Color color, Color colorPressed, bool force) {
     getColor(Set<WidgetState> states) {

@@ -1,27 +1,27 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../../Core/Managers/image_manager.dart';
 import '../Model/user_model.dart';
 
 enum CardStatus { like, dislike, superLike }
 
 class CardProvider extends ChangeNotifier {
-  List<UserModel> users = []; 
-  List<String> _urlImages = [];
+  List<UserModel> _users = [];
   bool isDragging = false;
   double _angle = 0;
   Offset _position = Offset.zero;
   Size _screenSize = Size.zero;
 
-  List<String> get urlImages => _urlImages;
+  List<UserModel> get users => _users;
   Offset get position => _position;
   double get angle => _angle;
 
   CardProvider() {
     resetUsers();
   }
+
   Size get screenSize => _screenSize;
   void setScreenSize(Size size) => _screenSize = size;
 
@@ -72,7 +72,7 @@ class CardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  double getStatusOpacity() { 
+  double getStatusOpacity() {
     const delta = 100;
     final pos = max(_position.dx.abs(), _position.dy.abs());
     final opacity = pos / delta;
@@ -110,76 +110,56 @@ class CardProvider extends ChangeNotifier {
     _angle = 20;
     _position += Offset(2 * _screenSize.width, 0);
     _nextCard();
-    notifyListeners();
-  }
-
-  Future _nextCard() async {
-    if (_urlImages.isEmpty) return;
-    await Future.delayed(const Duration(milliseconds: 200));
-    _urlImages.removeLast();
-    resetPosition();
   }
 
   void dislike() {
     _angle = -20;
     _position -= Offset(2 * _screenSize.width, 0);
     _nextCard();
-
-    notifyListeners();
   }
 
   void superLike() {
     _angle = 0;
     _position -= Offset(0, _screenSize.height);
     _nextCard();
+  }
+
+  Future _nextCard() async {
+    if (_users.isEmpty) return;
+    await Future.delayed(const Duration(milliseconds: 200));
+    _users.removeLast();
+    resetPosition();
     notifyListeners();
   }
 
-  // void resetUsers() {
-  //   _urlImages = [
-  //     'https://plus.unsplash.com/premium_photo-1661766718556-13c2efac1388?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGRvY3RvcnxlbnwwfHwwfHx8MA%3D%3D',
-  //     'https://plus.unsplash.com/premium_photo-1661580574627-9211124e5c3f?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  //   ].reversed.toList();
-  //   notifyListeners();
-  // }
-   void resetUsers() {
-    users = [
-      const UserModel(
+  void resetUsers() {
+    _users = [
+    UserModel(
         name: 'John Doe',
         age: 25,
         urlImage:
-            'https://plus.unsplash.com/premium_photo-1661580574627-9211124e5c3f?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            ImageManager.girl1,
         liveLocation: 'New York',
         miles: '2',
       ),
-      const UserModel(
+       UserModel(
         name: 'Jane Doe',
         age: 28,
         urlImage:
-            'https://plus.unsplash.com/premium_photo-1661766718556-13c2efac1388?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGRvY3RvcnxlbnwwfHwwfHx8MA%3D%3D',
-        liveLocation: 'New York',
+           ImageManager.girl2,
+        liveLocation: 'Los Angeles',
         miles: '5',
       ),
-      const UserModel(
-        name: 'John Doe',
-        age: 25,
+       UserModel(
+        name: 'Chris Smith',
+        age: 30,
         urlImage:
-            'https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZG9jdG9yfGVufDB8fDB8fHww',
-        liveLocation: 'New York',
-        miles: '2',
+           ImageManager.girl3,
+        liveLocation: 'San Francisco',
+        miles: '10',
       ),
-      const UserModel(
-        name: 'Jane Doe',
-        age: 28,
-        urlImage:
-            'https://images.unsplash.com/photo-1605684954998-685c79d6a018?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8ZG9jdG9yfGVufDB8fDB8fHww',
-        liveLocation: 'New York',
-        miles: '5',
-      ),
-    ];
+    ].reversed.toList();
 
-    // Also reset _urlImages with URLs of the users
-    _urlImages = users.map((user) => user.urlImage).toList();
     notifyListeners();
   }
 }
